@@ -21,6 +21,10 @@ namespace BasicRegistration.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Apply([FromForm] Candidate candidate)
         {
+            if (Repository.Applications.Any(c => c.Email.Equals(candidate.Email)))
+                ModelState.AddModelError("", "this user already have a registration");
+
+            if (!ModelState.IsValid) return View("Apply");
             Repository.Add(candidate);
             return View("Feedback", candidate);
         }
